@@ -9,13 +9,14 @@ use log::debug;
 use reqwest::{blocking, header::AUTHORIZATION};
 use serde_json::{json, Map, Value};
 
-#[derive(Builder)]
+#[derive(Builder, Debug)]
 #[builder(name = "ClientBuilder", pattern = "owned")]
 pub struct Client {
+    #[builder(default = "String::from(\"https://api.openai.com/v1/chat/completions\")")]
     api_url: String,
     api_key: String,
     model: String,
-    client: reqwest::blocking::Client,
+    requester: reqwest::blocking::Client,
 
     /// Message history
     #[builder(setter(skip), default)]
@@ -39,14 +40,14 @@ impl Client {
     */
 
     /// Run the api request to openai
-    fn request(&self, function: Option<Value>) -> anyhow::Result<Value> {
+    fn request(&self, functions: Vec<Value>) -> anyhow::Result<Value> {
         // TODO this is current a pretty dumb solution (api doesnt work when passing in functions
         // as empty vec)
-        let body: Value = if let Some(function) = function {
+        let body: Value = if functions.len() > 0 {
             json!({
                 "model": self.model,
                 "messages": self.messages,
-                "functions": vec![function]
+                "functions": functions
             })
         } else {
             json!({
@@ -56,7 +57,7 @@ impl Client {
         };
 
         let mut res: Value = self
-            .client
+            .requester
             .post(&self.api_url)
             .header(AUTHORIZATION, format!("Bearer {}", self.api_key.clone()))
             .json(&body)
@@ -82,12 +83,12 @@ impl Client {
     }
 
     /// Send one prompt to openai, can optionally include a function to be used to extract data
-    pub fn run_prompt(&mut self, prompt: &str, function: Option<Value>) -> anyhow::Result<&Value> {
+    pub fn run_prompt(&mut self, prompt: &str, functions: Vec<Value>) -> anyhow::Result<&Value> {
         self.messages.push(json!({
             "role": "user", "content": prompt,
         }));
 
-        let res_msg = self.request(function).unwrap();
+        let res_msg = self.request(functions).unwrap();
 
         self.messages.push(res_msg);
 

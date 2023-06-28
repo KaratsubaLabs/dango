@@ -17,3 +17,13 @@ members = [
 [features]
 
 [dependencies]
+dango_client = { path = "crates/dango_client" }
+dango_fn = { path = "crates/dango_fn" }
+dango_fn_derive = { path = "crates/dango_fn_derive" }
+
+reqwest = { version = "0.11", features = ["json", "blocking"] }
+
+dotenv = { version = "0.15" }
+
+log = "0.4"
+env_logger = "0.10"

@@ -108,6 +108,15 @@ checksum = "e496a50fda8aacccc86d7529e2c1e0892dbd0f898a6b5645b5561b89c3210efa"
 [[package]]
 name = "dango"
 version = "0.1.0"
+dependencies = [
+ "dango_client",
+ "dango_fn",
+ "dango_fn_derive",
+ "dotenv",
+ "env_logger",
+ "log",
+ "reqwest",
+]
 
 [[package]]
 name = "dango_client"
@@ -204,6 +213,12 @@ dependencies = [
  "derive_builder_core",
  "syn 1.0.109",
 ]
+
+[[package]]
+name = "dotenv"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "77c90badedccf4105eca100756a0b1289e191f6fcbdadd3cee1d2f614f97da8f"
 
 [[package]]
 name = "encoding_rs"
