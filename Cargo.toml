@@ -9,7 +9,7 @@ repository = "https://github.com/KaratsubaLabs/dango"
 
 [workspace]
 members = [
-    "crates/dango_api"
+    "crates/dango_client"
 ]
 
 [features]
