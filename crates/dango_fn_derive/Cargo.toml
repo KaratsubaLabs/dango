@@ -1,5 +1,5 @@
 [package]
-name = "dango"
+name = "dango_fn_derive"
 version = "0.1.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
@@ -7,13 +7,11 @@ authors = ["MrPicklePinosaur"]
 description = "chatgpt powered voice assistant"
 repository = "https://github.com/KaratsubaLabs/dango"
 
-[workspace]
-members = [
-    "crates/dango_client",
-    "crates/dango_fn",
-    "crates/dango_fn_derive",
-]
-
-[features]
+[lib]
+proc-macro = true
 
 [dependencies]
+syn = { version = "1.0", features = ["full"] }
+quote = "1.0"
+
+dango_fn = { path = "../dango_fn" }

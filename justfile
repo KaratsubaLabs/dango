@@ -7,6 +7,9 @@ debug:
 devsetup:
     cp dev/hooks/* .git/hooks
 
+check:
+    cargo check --workspace
+
 fmt:
     cargo +nightly fmt --all
 

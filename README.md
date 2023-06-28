@@ -11,3 +11,6 @@ ChatGPT powered voice assistant
 </div>
 
 
+## Resources
+
+- [chatgpt api](https://platform.openai.com/docs/guides/gpt/function-calling)

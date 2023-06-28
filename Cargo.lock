@@ -110,7 +110,7 @@ name = "dango"
 version = "0.1.0"
 
 [[package]]
-name = "dango_api"
+name = "dango_client"
 version = "0.1.0"
 dependencies = [
  "anyhow",
@@ -121,6 +121,22 @@ dependencies = [
  "serde_json",
  "thiserror",
  "tokio",
+]
+
+[[package]]
+name = "dango_fn"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
+]
+
+[[package]]
+name = "dango_fn_derive"
+version = "0.1.0"
+dependencies = [
+ "dango_fn",
+ "quote",
+ "syn 1.0.109",
 ]
 
 [[package]]

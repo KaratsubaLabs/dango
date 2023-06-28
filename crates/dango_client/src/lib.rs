@@ -5,6 +5,7 @@
 use std::{collections::HashMap, time::Duration};
 
 use derive_builder::Builder;
+use log::debug;
 use reqwest::{blocking, header::AUTHORIZATION};
 use serde_json::{json, Map, Value};
 
@@ -62,7 +63,7 @@ impl Client {
             .send()?
             .json()?;
 
-        println!("{}", serde_json::to_string_pretty(&res)?);
+        debug!("{}", serde_json::to_string_pretty(&res)?);
 
         // TODO check if response is error
 
