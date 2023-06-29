@@ -22,6 +22,7 @@ dango_fn = { path = "crates/dango_fn" }
 dango_fn_derive = { path = "crates/dango_fn_derive" }
 
 reqwest = { version = "0.11", features = ["json", "blocking"] }
+serde_json = "1"
 
 dotenv = { version = "0.15" }
 
