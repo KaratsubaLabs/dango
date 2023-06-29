@@ -3,7 +3,7 @@ use quote::quote;
 use serde_json::{json, Value};
 use syn::Expr;
 
-pub fn string(description: Expr) -> TokenStream {
+pub fn string(description: Expr) -> proc_macro2::TokenStream {
     quote! {
         json! {
             {
@@ -12,5 +12,4 @@ pub fn string(description: Expr) -> TokenStream {
             }
         }
     }
-    .into()
 }

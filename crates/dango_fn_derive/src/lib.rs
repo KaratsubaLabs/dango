@@ -4,7 +4,7 @@ use std::any::{Any, TypeId};
 
 use proc_macro::TokenStream;
 use quote::quote;
-use serde_json::{json, Value};
+use serde_json::{json, Map, Value};
 use syn::{parse::Parse, parse_macro_input, Expr, Fields, Ident, Item, ItemStruct, Meta};
 
 mod jsonschema;
@@ -28,7 +28,7 @@ fn impl_function(item: ItemStruct) -> TokenStream {
 
     match item.fields {
         Fields::Named(ref inner) => {
-            let fields: Vec<(String, TokenStream)> = inner
+            let fields: Vec<(String, proc_macro2::TokenStream)> = inner
                 .named
                 .iter()
                 .map(|field| {
@@ -51,25 +51,38 @@ fn impl_function(item: ItemStruct) -> TokenStream {
                     let schema = if field.type_id() == TypeId::of::<String>() {
                         jsonschema::string(description)
                     } else {
-                        quote! { compile_error!("Unexpected Type") }.into()
+                        quote! { compile_error!("Unexpected Type") }
                     };
 
                     (field_name, schema)
                 })
                 .collect();
 
+            let insert_calls: Vec<proc_macro2::TokenStream> = fields
+                .into_iter()
+                .map(|(name, schema)| {
+                    quote! {
+                        m.insert(#name, #schema);
+                    }
+                    .into()
+                })
+                .collect();
+
             let properties = quote! {
-                Map::from_iter()
+                {
+                    let mut m = Map::new();
+                    #(#insert_calls)*
+                    json! { m }
+                }
             };
 
             quote! {
                 json! {
-                    "name": struct_name,
+                    "name": #struct_name,
                     "description": ,
                     "parameters": {
                         "type": "object",
-                        "properties": {
-                        }
+                        "properties": #properties
                     }
                 }
             }

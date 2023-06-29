@@ -144,6 +144,7 @@ name = "dango_fn_derive"
 version = "0.1.0"
 dependencies = [
  "dango_fn",
+ "proc-macro2",
  "quote",
  "serde_json",
  "syn 2.0.22",
