@@ -145,7 +145,8 @@ version = "0.1.0"
 dependencies = [
  "dango_fn",
  "quote",
- "syn 1.0.109",
+ "serde_json",
+ "syn 2.0.22",
 ]
 
 [[package]]
