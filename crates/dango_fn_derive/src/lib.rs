@@ -53,13 +53,7 @@ fn impl_function(item: ItemStruct) -> TokenStream {
                         })
                         .expect("Expected description");
 
-                    let schema = quote! {
-                        json! {
-                            {
-                                "type": "string"
-                            }
-                        }
-                    };
+                    let schema = jsonschema::string(description);
                     /*
                     let schema = if field.type_id() == TypeId::of::<String>() {
                         // jsonschema::string(description)
@@ -85,7 +79,7 @@ fn impl_function(item: ItemStruct) -> TokenStream {
                 .map(|(name, schema)| {
                     quote! {
                         // let val: Value = #schema;
-                        m.insert(#name, #schema);
+                        m.insert(#name.to_string(), #schema);
                     }
                 })
                 .collect();

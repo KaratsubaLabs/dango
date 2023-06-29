@@ -9,5 +9,5 @@ struct WeatherFn {
 }
 
 fn main() {
-    // WeatherFn::schema();
+    println!("{}", WeatherFn::schema());
 }
