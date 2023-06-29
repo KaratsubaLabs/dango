@@ -2,6 +2,7 @@ extern crate proc_macro;
 
 use std::any::{Any, TypeId};
 
+use dango_fn::Func;
 use proc_macro::TokenStream;
 use quote::quote;
 use serde_json::{json, Map, Value};
@@ -39,20 +40,41 @@ fn impl_function(item: ItemStruct) -> TokenStream {
                         .attrs
                         .iter()
                         .find_map(|attr| {
-                            if attr.path().is_ident("doc") {
-                                let doc: Expr = attr.parse_args().unwrap();
-                                Some(doc)
+                            if let Meta::NameValue(meta_name_value) = &attr.meta {
+                                if meta_name_value.path.is_ident("doc") {
+                                    let doc: Expr = meta_name_value.value.clone();
+                                    Some(doc)
+                                } else {
+                                    None
+                                }
                             } else {
                                 None
                             }
                         })
                         .expect("Expected description");
 
-                    let schema = if field.type_id() == TypeId::of::<String>() {
-                        jsonschema::string(description)
-                    } else {
-                        quote! { compile_error!("Unexpected Type") }
+                    let schema = quote! {
+                        json! {
+                            {
+                                "type": "string"
+                            }
+                        }
                     };
+                    /*
+                    let schema = if field.type_id() == TypeId::of::<String>() {
+                        // jsonschema::string(description)
+                        quote! {
+                            json! {
+                                {
+                                    "type": "string"
+                                }
+                            }
+                        }
+
+                    } else {
+                        panic!("Type not handled")
+                    };
+                    */
 
                     (field_name, schema)
                 })
@@ -62,9 +84,9 @@ fn impl_function(item: ItemStruct) -> TokenStream {
                 .into_iter()
                 .map(|(name, schema)| {
                     quote! {
+                        // let val: Value = #schema;
                         m.insert(#name, #schema);
                     }
-                    .into()
                 })
                 .collect();
 
@@ -76,13 +98,26 @@ fn impl_function(item: ItemStruct) -> TokenStream {
                 }
             };
 
-            quote! {
+            let struct_name_str = struct_name.to_string();
+            let schema = quote! {
+                let _props = #properties;
                 json! {
-                    "name": #struct_name,
-                    "description": ,
-                    "parameters": {
-                        "type": "object",
-                        "properties": #properties
+                    {
+                        "name": #struct_name_str,
+                        // "description": ,
+                        "parameters": {
+                            "type": "object",
+                            "properties": _props
+                        }
+                    }
+                }
+            };
+
+            quote! {
+
+                impl Func for #struct_name {
+                    fn schema() -> Value {
+                        #schema
                     }
                 }
             }
