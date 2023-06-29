@@ -2,6 +2,7 @@ use std::{env, time::Duration};
 
 use dango_client::ClientBuilder;
 use dotenv::dotenv;
+use serde_json::{json, Value};
 
 fn main() {
     dotenv().ok();
@@ -21,5 +22,19 @@ fn main() {
         .build()
         .unwrap();
 
-    client.run_prompt("", vec![]).unwrap();
+    let functions: Vec<Value> = vec![json!({
+        "name": "weather",
+        "description": "get the weather of a given city",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "type": "string",
+                    "description": "the city to get the weather of"
+                }
+            }
+        }
+    })];
+
+    client.run_prompt("", functions).unwrap();
 }

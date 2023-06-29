@@ -2,6 +2,8 @@
 //!
 //! Use [schemars](https://docs.rs/schemars/latest/schemars/index.html#macros)
 
+mod func;
+
 use std::{collections::HashMap, time::Duration};
 
 use derive_builder::Builder;
