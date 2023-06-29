@@ -9,6 +9,7 @@ use std::{collections::HashMap, time::Duration};
 use derive_builder::Builder;
 use log::debug;
 use reqwest::{blocking, header::AUTHORIZATION};
+use serde::de::DeserializeOwned;
 use serde_json::{json, Map, Value};
 
 #[derive(Builder, Debug)]
@@ -90,6 +91,10 @@ impl Client {
             "role": "user", "content": prompt,
         }));
 
+        self.completions(functions)
+    }
+
+    pub fn completions(&mut self, functions: &Vec<Value>) -> anyhow::Result<&Value> {
         let res_msg = self.request(functions).unwrap();
 
         self.messages.push(res_msg);
@@ -102,5 +107,11 @@ impl Client {
         self.messages.push(json!({
             "role": "system", "content": role,
         }));
+    }
+
+    pub fn response(&mut self, function_name: &str, content: &str) {
+        self.messages.push(json!({
+            "role": "function", "name": function_name, "content": content
+        }))
     }
 }

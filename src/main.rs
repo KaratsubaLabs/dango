@@ -45,6 +45,19 @@ fn main() {
         };
 
         let res = client.run_prompt(&input, &functions).unwrap();
-        println!("{:?}", res);
+        let fn_call = &res["function_call"];
+
+        println!("{:?}", fn_call);
+
+        let fn_name = fn_call["name"].as_str().unwrap();
+        let fn_args = fn_call["arguments"].as_str().unwrap();
+        let fn_args: Value = serde_json::from_str(fn_args).unwrap();
+
+        if fn_name == "weather" {
+            client.response("weather", "30 degrees Celsius");
+        }
+
+        let res = client.completions(&functions).unwrap();
+        println!("complete {:?}", res);
     }
 }
