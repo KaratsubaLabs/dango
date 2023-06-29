@@ -36,5 +36,15 @@ fn main() {
         }
     })];
 
-    client.run_prompt("", functions).unwrap();
+    let mut line = rustyline::DefaultEditor::new().unwrap();
+
+    loop {
+        let input = match line.readline(" > ") {
+            Ok(line) => line,
+            _ => break,
+        };
+
+        let res = client.run_prompt(&input, &functions).unwrap();
+        println!("{:?}", res);
+    }
 }

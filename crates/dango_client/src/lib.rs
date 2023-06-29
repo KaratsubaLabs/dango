@@ -42,7 +42,7 @@ impl Client {
     */
 
     /// Run the api request to openai
-    fn request(&self, functions: Vec<Value>) -> anyhow::Result<Value> {
+    fn request(&self, functions: &Vec<Value>) -> anyhow::Result<Value> {
         // TODO this is current a pretty dumb solution (api doesnt work when passing in functions
         // as empty vec)
         let body: Value = if functions.len() > 0 {
@@ -85,7 +85,7 @@ impl Client {
     }
 
     /// Send one prompt to openai, can optionally include a function to be used to extract data
-    pub fn run_prompt(&mut self, prompt: &str, functions: Vec<Value>) -> anyhow::Result<&Value> {
+    pub fn run_prompt(&mut self, prompt: &str, functions: &Vec<Value>) -> anyhow::Result<&Value> {
         self.messages.push(json!({
             "role": "user", "content": prompt,
         }));
